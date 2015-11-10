@@ -1,132 +1,243 @@
-#include <iostream>
-#include "linkedList.h"
-using namespace std;
+template <class kind>
+BNode<kind>::BNode()
+{
+    setVal(NULL);
+    prev = NULL;
+    next = NULL;
+}
+template <class kind>
+BNode<kind>::BNode(kind data)
+{
+    setVal(data);
+    prev = NULL;
+    next = NULL;
+}
+BNode<kind>::BNode(kind data, BNode<kind>* p1,BNode<kind>* p2)
+{
+    setVal(data);
+    prev = p1;
+    next = p2;
+}
 /*
-List() ::  is the default constructor for the class List.
-It sets the pointers back and front to Null.
-*/
-template<class T>
-T List::List()
+ ListNode() ::  is the default constructor for the class ListNode.
+ It sets the pointers back and front to NULL.
+ */
+template <class kind>
+ListNode<kind>::ListNode()
 {
     front = NULL;
     back = NULL;
+    setSize();
 }
 /*
- List() ::  is the copy constructor for the class List.
-
+ ListNode() ::  is the copy constructor for the class List.
  */
-template<class T>
-T List::List(T data)
+
+template <class kind>
+ListNode<kind>::ListNode(kind data)
 {
-    val = data; //copy ** Need to fix this**
+    setVal(data);
+    front = NULL;
+    back = NULL;
+    setSize();
 }
 /*
-empty() ::  is an boolean accessor that indicates whether the Blist is empty.
-True if empty else false
-*/
-template<class T>
-bool empty::List(T data)
+ empty() ::  is an boolean accessor that indicates whether the BListNode is empty.
+ True if empty else false
+ */
+template <class kind>
+bool ListNode<kind>::empty()
 {
-    return(size == 0)
+    return(front == NULL);
 }
 //test
 
 /*
-push_front(T a ):: is the method in the class list.
-It adds data in the front of the linked list
-*/
-template<class T>
-void LIST<T>::push_front(T addData);
+ push_front(kind a ):: is the method in the class ListNode.
+ It adds data in the front of the linked ListNode
+ */
+template <class kind>
+void ListNode<kind>::push_front(kind addData)
 {
-	BNode<S> *temp = front;  //creates a pointer
-	front = new Node<T>;  //creates a new node
-	front -> val = addData;      //sets the value for the node
-	front -> next = temp;   //points the next pointer to the previously front
+    BNode<kind> *temp = front;  //creates a pointer
+    front = new BNode<kind>;  //creates a new node
+    front -> val = addData;      //sets the value for the node
+    front -> next = temp;
+    front -> prev = NULL;
+    setSize();
+    //points the next pointer to the previously front
     //delete temp;    //Dont know if this is necessary
 }
 /*
-pop_front(T data) pops the data from the front of the linked list.
-We assume that the blist is not empty so we don't check for NULL.
-*/
-template<class T>
-T LIST<T>::pop_front()
+ pop_front(kind data) pops the data from the front of the linked ListNode.
+ We assume that the bListNode is not empty so we don't check for NULL.
+ */
+template<class kind>
+kind ListNode<kind>::pop_front()
 {
-    BNode<S> *temp = front;  //creates a pointer
+    BNode<kind> *temp;
+    temp = front;  //creates a pointer
     front = front -> next;  //assignes front pointer to the next pointer
     int data = temp -> val; //assign temporary before deleting temp
-    delete temp; 
+    delete temp;
+    subtractSize();
     return data;
 }
 /*
-push_back(T addData) adds data in the end of the list.
-*/
-template<class T>
-void LIST<T>::push_back(T a);
+ push_back(kind addData) adds data in the end of the ListNode.
+ */
+template<class kind>
+void ListNode<kind>::push_back(kind addData)
 {
-	if(back == NULL) //if the back pointer is empty
-	{
-		front = back = new Node<T>;  //creates new pointer front
-		front -> val = addData;  //assigns value to the pointer
-		front -> next = NULL;    //points the next to NULL
-		return;
-	}
-	BNode<S> *temp = new Node<T>;   //assignes new pointer temp and a new node
-	temp -> val = addData;
-	temp -> next = NULL;
-	back -> next = temp;
-	back = temp;
+    if(back == NULL) //if the back pointer is empty
+    {
+        front = back = new BNode<kind>;  //creates new pointer front
+        front -> val = addData;  //assigns value to the pointer
+        front -> next = NULL;    //points the next to NULL
+        setSize();
+        return;
+    }
+    BNode<kind> *temp;
+    temp = new BNode<kind>;   //assignes new pointer temp and a new node
+    temp -> val = addData;
+    temp -> next = NULL;
+    back -> next = temp;
+    back = temp;
+    setSize();
     //delete temp; //May be??
 }
 /*
  pop_back() returns data from the end.
-*/
-template<class T>
-T LIST <T>::pop_back()
+ */
+template<class kind>
+kind ListNode<kind>::pop_back()
 {
-    BNode<S> *temp = back -> prev;//creates a node previous to the last node
-    temp ->next = NULL;  //points next to null;
-    temp ->val = back ->val; //sets value of temp to value of the last node
+    BNode<kind> *temp = back -> prev;//creates a node previous to the last node
+    temp ->next = NULL;  //points next to NULL;
+    //temp ->val = back ->val; //sets value of temp to value of the last node
+    kind value = back->val;
     delete back; //deletes the last node
     back = temp;  //sets temp as the back
-    //size--;  //*****need to do this in every method ********
+    subtractSize();
     return value;
     
 }
 /*
-~List is the destructor
+ insert(T data, Bnode<kind> p) inserts the data after the pointer p.
  */
-template<class T>
-T List<T>::~List();
+template<class kind>
+kind ListNode<kind>::insert(kind data, BNode<kind> afterThis)
 {
-    delete next, prev;
+    BNode<kind> *temp;
+    temp = new BNode<kind>;
+    temp->val = data;
+    if (afterThis == NULL) {
+        front-> val =  data;//set val to data
+        //front-> back = NULL; //set the node as the back to NULL
+        //p-> front = NULL; // set the front as NULL
+    }
+    else
+    {
+        if(afterThis->next == NULL)
+        {
+            afterThis-> next-> val = data; //sets val of the NULL node to data
+            afterThis->next-> back = NULL; //sets back of the pointer as NULL
+        }
+        else
+        {
+            BNode<kind> *temp; //makes new pointer
+            temp = new BNode<kind>; //temp points to the new created new node
+            temp -> val = data; //inserts data to the new node
+            afterThis->next->prev = temp;   //points next of the p to temp
+            afterThis->next = temp; //points to temp
+            temp->prev = afterThis;    //points prev of the temp to p
+        }
+    }
 }
-    /*
-	Bnode<T> *temp-> val;
-	if(front == back)
-		front = back = NULL;
-	else
-	{
-		front = front-> next;
-		front -> prev = NULL;
-	}
-	delete temp;
-	return;
 /*
-}
-\
-//p loacates the node the value
-//inserted after
-
-Node<T> temp = p->next; //(*p).next //
-p -> next = new Node<T>;  //creates a new node
-p -> next -> val = 7;  //assigns the new node with value of 7
-p -> next -> next = temp; //points to the new node from the temp
-size++;
-//---------------------//
-//to insert a node in the front
-p = ls.getFront();
-//check if the lenght exceeds 1037
-for(int i = 0; i < 1037; i++)
+ ListNode.sublst(BNode<kind> a,BNode<kind> z)
+ */
+template<class kind>
+ListNode<kind> ListNode<kind>::sublst(BNode<kind> from,BNode<kind> to)
 {
-	= = p-> next;
-} 
+    BNode<kind> *temp;
+    ListNode<kind> tempList = new ListNode<kind>;
+    temp = from;
+    tempList.push_front(temp->val);
+    while (temp != to)
+    {
+        temp = temp->next;
+        tempList.push_back(temp->val);
+    }
+    
+    
+    
+}
+/*
+ ListNode.sort(BNode<kind> a,BNode<kind> z)
+ */
+template<class kind>
+void ListNode<kind>::sort(BNode<kind> &from,BNode<kind> &to)
+{
+    BNode<kind> *temp, *temp1;   //creates two pointers
+    temp = from;                 //assigns temp to the begining of the requested node
+    temp1 = new BNode<kind>;     //creates a new node and assignes pointer to it
+    while(temp->val != NULL and temp != to)  //if not temp is not NULL and temp is not the last
+    {
+        if(temp->val > temp->next->val)   //if the value in temp is greater than the next node value
+        {
+            temp1 ->val = temp;
+            temp-> val = temp->next-> val;
+            temp->next -> val = temp1 ->val;
+        }
+        else
+        {
+            temp = temp->next;
+        }
+        
+    }
+}
+template<class kind>
+void ListNode<kind>::printNode(BNode<kind> node)
+{
+    BNode<kind> *temp;
+    temp = new BNode<kind>;
+    if(front == NULL)
+    {
+        cout << "List is empty, nothing to display" << endl;
+        return;
+    }
+    temp = front;
+    cout << " The list is :"<< endl;
+    while(temp!= NULL)
+    {
+        cout << temp-> val << " <-> ";
+        temp = temp -> next;
+    }
+    cout << "  End  "<< endl;
+}
+/*
+ ~ListNode is the destructor
+ */
+template<class kind>
+ListNode<kind>::~ListNode()
+{
+    // walk through each node and delete them one at a time
+    BNode<kind> *temp;
+    while (front != NULL){
+        temp = front->next;
+        delete front;
+        front = temp;
+    }
+    delete temp;
+}
+
+
+
+int main()
+{
+    ListNode<int> a;
+    // make a BNode, then insert
+    a.push_front(5);
+    
+}
