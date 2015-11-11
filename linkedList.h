@@ -29,17 +29,21 @@ public:
     //constructors
     ListNode();//default constructor
     ListNode(kind data);//constructor that takes data
+    BNode<kind> getFront(){return *front;}
+    BNode<kind> getBack(){return *back;}
     void setSize(){size++;}
     void subtractSize(){size--;}
     int getSize(){return size;}
     bool empty(); //boolean accessor that indicates whether the BListNode is empty
     void push_front(kind addData);
     void push_back(kind addData);
-    void printNode(BNode<kind> node);
+    void printNode();
+    void delete(int n);
     kind pop_back();
     kind pop_front();
     kind insert(kind data, BNode<kind> afterThis);//insert data after the pointer p
-    ListNode sublst(BNode<kind> from,BNode<kind> to); // returns a ListNode which is a copy of ListNode, starting a to z
+    ListNode<kind> sublst(BNode<kind> from,BNode<kind> to); // returns a ListNode which is a copy of ListNode, starting a to z
+    kind operator [](int index);
     ~ListNode(); //destuctor
     void sort(BNode<kind> &from,BNode<kind> &to); //sorts the portion of ListNode bounded by a and z //this should support the overloaded operators == , <  //default value for front and back
     //void sort(BNode<kind> a,BNode<kind> z, cmp());//see the hw description
